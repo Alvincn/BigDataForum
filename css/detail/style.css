@@ -1,0 +1,252 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  width: 100vw;
+  height: 100vh;
+  background-color: #f9f7f0;
+}
+body header {
+  height: 60px;
+  width: 100%;
+  border-bottom: solid gray 1px;
+  background-color: #246ba5;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+body header img {
+  height: 40px;
+  text-align: left;
+  display: inline-block;
+  width: 40px;
+  position: absolute;
+  left: 0.5208rem;
+  top: 10px;
+}
+body header h2 {
+  line-height: 60px;
+  text-align: center;
+  color: white;
+  height: 60px;
+}
+main #questiondetail {
+  margin-top: 65px;
+  width: 100%;
+  background-color: rgba(211, 211, 211, 0.581);
+  padding: 10px 20px;
+  border-bottom: solid 2px gray;
+}
+main #questiondetail #ask {
+  font-size: 1.5rem;
+}
+main #questiondetail #answer {
+  font-size: 1.1rem;
+}
+main #questiondetail #timeuser {
+  display: flex;
+  margin-top: 10px;
+  justify-content: space-around;
+}
+main #operation {
+  width: 100%;
+  display: flex;
+}
+main #operation #delete {
+  flex: 1;
+  display: flex;
+}
+main #operation #delete button {
+  width: 100%;
+  height: 100%;
+  font-size: 1.2rem;
+  line-height: 40px;
+  background-color: #5a96c7;
+  color: white;
+}
+main #operation #delete button img {
+  display: inline;
+  width: 40px;
+}
+main #operation #edit {
+  flex: 1;
+}
+main #operation #edit button {
+  width: 100%;
+  height: 100%;
+  font-size: 1.2rem;
+  line-height: 40px;
+  background-color: #5a96c7;
+  color: white;
+}
+footer {
+  position: fixed;
+  width: 90%;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+footer input:first-child {
+  text-align: center;
+  width: 20%;
+  outline: none;
+  height: 30px;
+  border-radius: 19px 2px 2px 19px;
+  border: solid 1px #246ba5;
+}
+footer input:first-child:focus {
+  transition: all 1s;
+  box-shadow: 0 0 9px #5a96c7;
+}
+footer input:nth-child(2) {
+  text-align: center;
+  height: 30px;
+  outline: none;
+  border: solid 1px #246ba5;
+  border-radius: 2px;
+  width: 57%;
+}
+footer input:nth-child(2):focus {
+  transition: all 1s;
+  box-shadow: 0 0 9px #5a96c7;
+}
+footer button {
+  width: 20%;
+  border-radius: 2px 19px 19px 2px;
+  background-color: #bce1ff;
+  height: 30px;
+}
+#comli {
+  width: 100%;
+}
+#comli ul {
+  width: 100%;
+}
+#comli ul li {
+  width: 100%;
+  padding: 10px 20px;
+  border-bottom: solid 1px gray;
+}
+.label {
+  background-color: #5bc0de;
+  display: inline;
+  padding: 0.2em 0.6em 0.3em;
+  font-size: 20%;
+  font-weight: 700;
+  line-height: 2;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  border-radius: 10px;
+  vertical-align: baseline;
+  border-radius: 0.25em;
+}
+dialog:not([open]) {
+  display: none;
+}
+dialog {
+  display: block;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  border: 0;
+  width: 70%;
+  height: 200px;
+  margin: auto;
+  background: white;
+  transition: all 1s;
+  background-color: #fff;
+  text-align: center;
+  border-radius: 19px;
+  overflow: hidden;
+}
+dialog h1 {
+  margin: 20% 40px 10px 40px;
+}
+dialog #delete {
+  font-size: 16px;
+  line-height: 24px;
+  color: #0009;
+  word-wrap: break-word;
+}
+dialog #dialogFooter {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 20px 0;
+}
+dialog #dialogFooter button {
+  border: 0;
+  width: 50%;
+  font-size: 1.5rem;
+  background-color: white;
+  margin-top: 10%;
+}
+dialog #dialogFooter button:first-child {
+  color: gray;
+}
+dialog #dialogFooter button:nth-child(2) {
+  color: #0052d9;
+}
+dialog::backdrop {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  background: rgba(0, 0, 0, 0.1);
+}
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+#answershow {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  background-color: #cee9ff;
+}
+#answershow h1 {
+  margin: 0;
+  text-align: center;
+  margin: 10px;
+}
+#answershow textarea {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  border-radius: 19px;
+  font-size: 1rem;
+}
+.active {
+  display: block;
+  animation: showanswer 1s infinite;
+  animation-iteration-count: 1;
+  width: 100vw;
+  height: 350px;
+}
+#dialogFooter1 {
+  width: 100%;
+  margin-top: 20px;
+  height: 40px;
+  display: flex;
+  justify-content: space-around;
+}
+#dialogFooter1 button {
+  width: 30%;
+  font-size: 1rem;
+  border-radius: 10px;
+}
+@keyframes showanswer {
+  from {
+    display: block;
+    width: 100%;
+    height: 0;
+  }
+  to {
+    display: block;
+    width: 100%;
+    height: 350px;
+  }
+}

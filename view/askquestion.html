@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>提问</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@nutui/nutui@2.3.10/dist/nutui.min.css"
+    />
+    <!-- 引入自己的样式 -->
+    <link rel="stylesheet" href="../css/style.css" />
+    <!-- 引入这个专属样式 -->
+    <link rel="stylesheet" href="../css/askstyle/askstyle.css" />
+    <!-- 引入vue -->
+    <script src="../js/vue.js"></script>
+    <!-- 引入axios -->
+    <script src="../js//axios.min.js"></script>
+    <!-- 引入NUTUI -->
+    <script src="https://cdn.jsdelivr.net/npm/@nutui/nutui@2.3.10/dist/nutui.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h2>
+          <img src="../access/back.svg" alt="" @click="backindex" />
+          提问
+        </h2>
+      </header>
+      <main>
+        <div id="user">
+          <label for="username"
+            >名字：<input type="text" id="username" placeholder="请输入名字" v-model="username"
+          /></label>
+          <textarea
+            name="question"
+            v-model="question"
+            cols="30"
+            rows="6"
+            placeholder="少侠，请提出你的问题"
+            maxlength="100"
+            @input="textareaAlert(100)"
+          ></textarea>
+          <br />
+          <div style="font-size: 10px; text-align: right; color: gray" id="number">0/100</div>
+        </div>
+        <div id="submit">
+          <button @click="submitQues">提交</button>
+        </div>
+      </main>
+    </div>
+    <script>
+      new Vue({
+        el: '#app',
+        data() {
+          return {
+            username: localStorage.getItem('username') || '',
+            question: '',
+          };
+        },
+        // created() {
+        //   let localuser = localStorage.getItem('username');
+        //   console.log(localuser);
+        //   if (localuser) {
+        //     this.username = localuser;
+        //   } else {
+        //     this.username = '';
+        //   }
+        // },
+        methods: {
+          backindex() {
+            window.location = '../index.html';
+          },
+          textareaAlert(maxlength) {
+            document.querySelector('#number').innerHTML = `${this.question.length}/${maxlength}`;
+          },
+          submitQues() {
+            if (this.username == '') {
+              return this.$toast.fail('请输入你的姓名!');
+            } else if (this.question == '') {
+              return this.$toast.fail('请输入你的问题！');
+            }
+            this.loading = this.$toast.loading('正在提交');
+            localStorage.setItem('username', this.username);
+            var result = new URLSearchParams();
+            result.append('username', this.username);
+            result.append('question', this.question);
+            axios
+              .post('http://www.ivikey.top:3009/addqus', result)
+              .then((res) => {
+                console.log(res.data);
+                setTimeout(() => {
+                  this.loading.hide();
+                  this.$toast.success('提交成功！');
+                  setTimeout(() => {
+                    window.location = '../index.html';
+                  }, 500);
+                }, 500);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

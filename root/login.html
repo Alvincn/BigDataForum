@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>大数据论坛后台</title>
+    <!-- NUTUI样式 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@nutui/nutui@2.3.10/dist/nutui.min.css"
+    />
+    <!-- 引入自己的样式 -->
+    <link rel="stylesheet" href="./css/style.css" />
+    <!-- 引入vue -->
+    <script src="./js/vue.js"></script>
+    <!-- 引入axios -->
+    <script src="./js/axios.min.js"></script>
+    <!-- 引入NUTUI -->
+    <script src="https://cdn.jsdelivr.net/npm/@nutui/nutui@2.3.10/dist/nutui.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <main>
+        <div id="logo" style="display: flex; justify-content: center; margin-top: 100px">
+          <img src="./image/logo.png" alt="" style="width: 30%" />
+        </div>
+        <br />
+        <h2 style="text-align: center">大数据论坛后台</h2>
+        <div id="email">
+          <div class="wrapper">
+            <div class="input-data">
+              <input
+                type="text"
+                required=""
+                style="background-color: rgba(0, 0, 0, 0)"
+                v-model="email"
+              />
+              <div class="underline"></div>
+              <label>邮箱</label>
+            </div>
+          </div>
+          <div class="wrapper" style="margin-top: 30px">
+            <div
+              class="input-data"
+              style="width: 100%; display: flex; justify-content: space-around"
+            >
+              <div style="width: 90%">
+                <input
+                  type="text"
+                  required=""
+                  style="width: 100%; background-color: rgba(0, 0, 0, 0)"
+                  v-model="imgcaptcha"
+                />
+                <div class="underline"></div>
+                <label>图形验证码</label>
+              </div>
+              <div id="captcha" @click="changeimg" style="width: 30%"></div>
+            </div>
+          </div>
+          <div class="wrapper" style="margin-top: 30px">
+            <div
+              class="input-data"
+              style="width: 100%; display: flex; justify-content: space-around"
+            >
+              <div style="width: 80%; flex: 3">
+                <input
+                  type="text"
+                  required=""
+                  style="width: 100%; background-color: rgba(0, 0, 0, 0)"
+                  v-model="emailcode"
+                />
+                <div class="underline"></div>
+                <label>邮箱验证码</label>
+              </div>
+              <button
+                style="flex: 1; background-color: #246ba5; color: white; border-radius: 0 7px 7px 0"
+                @click="getCode"
+              >
+                发送验证码
+              </button>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 40px">
+          <button
+            style="
+              width: 200px;
+              height: 50px;
+              border-radius: 8px;
+              background-color: #246ba5;
+              color: white;
+              border: 0;
+            "
+            @click="login"
+          >
+            登录
+          </button>
+        </div>
+      </main>
+    </div>
+    <script src="./js/index.js"></script>
+  </body>
+</html>

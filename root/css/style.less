@@ -1,0 +1,84 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+}
+body {
+  width: 100%;
+  background-color: #f9f7f0;
+  overflow: hidden;
+  font-family: Helvetica;
+}
+body header {
+  height: 60px;
+  width: 100%;
+  border-bottom: solid gray 1px;
+  background-color: #246ba5;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+body header h2 {
+  line-height: 60px;
+  text-align: center;
+  color: white;
+  height: 60px;
+}
+#email {
+  margin-top: 50%;
+  text-align: center;
+}
+.wrapper {
+  width: 80%;
+  padding: 20px;
+  margin: 0 auto;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+.wrapper .input-data {
+  width: 100%;
+  height: 40px;
+  position: relative;
+}
+.wrapper .input-data input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-bottom: 2px solid silver;
+  font-size: 17px;
+}
+.input-data input:focus ~ label,
+.input-data input:valid ~ label {
+  transform: translateY(-30px);
+  font-size: 15px;
+  color: #4158d0;
+}
+.wrapper .input-data label {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  color: grey;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+.wrapper .input-data .underline {
+  position: absolute;
+  bottom: 0px;
+  height: 2px;
+  width: 100%;
+}
+.input-data .underline:before {
+  position: absolute;
+  content: '';
+  height: 50%;
+  width: 70%;
+  background: #4158d0;
+  transform: scaleX(0);
+  left: 0;
+  transition: transform 0.3s ease;
+}
+
+.input-data input:focus ~ .underline:before,
+.input-data input:valid ~ .underline:before {
+  transform: scaleX(1);
+}

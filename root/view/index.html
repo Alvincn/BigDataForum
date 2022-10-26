@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>大数据论坛后台</title>
+    <!-- NUTUI样式 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@nutui/nutui@2.3.10/dist/nutui.min.css"
+    />
+    <!-- 引入自己的样式 -->
+    <link rel="stylesheet" href="../css/home/style.css" />
+    <!-- 引入vue -->
+    <script src="../js/vue.js"></script>
+    <!-- 引入axios -->
+    <script src="../js/axios.min.js"></script>
+    <!-- 引入NUTUI -->
+    <script src="https://cdn.jsdelivr.net/npm/@nutui/nutui@2.3.10/dist/nutui.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h2>大数据论坛后台</h2>
+      </header>
+      <main>
+        <div id="topbar" style="display: flex; justify-content: center">
+          <div id="data">共有 {{number}} 人参与提问</div>
+          <div id="username">
+            {{user.username}}
+            <button @click="logof" style="border: none; color: blue; font-size: 1rem">
+              退出登录
+            </button>
+          </div>
+        </div>
+
+        <ul>
+          <li v-for="(item,index) in questions" @click="godetail(item.id)">
+            <div id="ques">
+              <div id="que">问：{{item.question}}</div>
+              <div style="width: 100%; height: 30%; font-size: 1.0417rem; color: rgb(52, 51, 51)">
+                答：<span v-if="item.answer">{{item.answer}}</span
+                ><span v-else>暂无回答,我们会尽块回答</span>
+              </div>
+              <br />
+            </div>
+            <div id="btm">
+              <div id="time">{{item.time}}</div>
+              <div id="user">{{item.username}}</div>
+            </div>
+          </li>
+        </ul>
+      </main>
+    </div>
+    <script>
+      new Vue({
+        el: '#app',
+        data() {
+          return {
+            questions: [
+              {
+                id: 1,
+                username: '',
+                question: '服务器错误',
+                answer: '服务器错误',
+                err: '服务器错误',
+              },
+            ],
+            user: {},
+            number: '',
+            email: '',
+          };
+        },
+        created() {
+          this.email = localStorage.getItem('email');
+          // console.log(email);
+          if (this.email == null) {
+            this.$toast.fail('您尚未登录，请登录');
+            return setTimeout(() => {
+              window.location = '../login.html';
+            }, 500);
+          } else {
+            axios
+              .post('http://www.ivikey.top:3009/getquestions')
+              .then((res) => {
+                this.questions = res.data.data;
+                this.number = res.data.data.length;
+                var email = new URLSearchParams();
+                email.append('email', this.email);
+                axios
+                  .post('http://www.ivikey.top:3009/userexist', email)
+                  .then((res) => {
+                    console.log(res.data);
+                    if (res.data.code == 200) {
+                      this.user = res.data.data[0];
+                      console.log(this.user);
+                    }
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+        },
+        methods: {
+          goask: function () {
+            window.location.href = './view/askquestion.html';
+          },
+          logof: function () {
+            localStorage.removeItem('email');
+            window.location = '../login.html';
+          },
+          godetail(id) {
+            window.location = `./detail.html?id=` + id;
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

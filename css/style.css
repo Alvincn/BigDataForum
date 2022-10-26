@@ -1,0 +1,86 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  width: 100%;
+  background-color: #f9f7f0;
+}
+body header {
+  height: 60px;
+  width: 100%;
+  border-bottom: solid gray 1px;
+  background-color: #246ba5;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+body header h2 {
+  line-height: 60px;
+  text-align: center;
+  color: white;
+  height: 60px;
+}
+ul {
+  list-style: none;
+}
+ul li {
+  width: 90%;
+  height: 20%;
+  background: #e0e0e0;
+  box-shadow: 20px 20px 30px #bebebe;
+  margin: 20px auto;
+  padding: 20px 10px;
+  border-radius: 20px;
+}
+ul li #ques {
+  width: 100%;
+  height: 70%;
+  font-size: 1.1458rem;
+}
+ul li #ques #que {
+  height: 60%;
+  width: 100%;
+  line-height: 1.5625rem;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+}
+ul li #btm {
+  display: flex;
+  width: 100%;
+  height: 30%;
+  line-height: 60px;
+  justify-content: space-between;
+  text-align: center;
+}
+ul li #btm #time {
+  height: 100%;
+}
+ul li #btm #user {
+  height: 100%;
+}
+footer {
+  width: 100%;
+  height: 10%;
+}
+footer button {
+  width: 25%;
+  height: 5%;
+  position: fixed;
+  bottom: 0.7813rem;
+  right: 0.5208rem;
+  border-radius: 8px;
+  background-color: #246ba5;
+  color: white;
+  border: 0;
+}
+#data {
+  width: 100%;
+  text-align: right;
+  margin-top: 7vh;
+  line-height: 5vh;
+  height: 3%;
+}

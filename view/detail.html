@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>问题详情</title>
+    <!-- NUTUI样式 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@nutui/nutui@2.3.10/dist/nutui.min.css"
+    />
+    <!-- 引入自己的样式 -->
+    <link rel="stylesheet" href="../css/detail/style.css" />
+    <!-- 引入vue -->
+    <script src="../js/vue.js"></script>
+    <!-- 引入axios -->
+    <script src="../js/axios.min.js"></script>
+    <!-- 引入NUTUI -->
+    <script src="https://cdn.jsdelivr.net/npm/@nutui/nutui@2.3.10/dist/nutui.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h2><img src="../access/back.svg" alt="" @click="backindex" />问题详情</h2>
+      </header>
+      <main>
+        <div id="questiondetail">
+          <span id="ask">问：{{question.question}}</span>
+          <br /><br />
+          <span id="answer"
+            >答：<span v-if="!question.answer">暂无回答,我们会尽快回答</span
+            ><span v-else>{{question.answer}}</span></span
+          >
+          <br />
+          <div id="timeuser">
+            <div id="time">{{question.username}}</div>
+            <div id="user">{{question.time}}</div>
+          </div>
+        </div>
+        <div id="comments">
+          <h2>评论区</h2>
+          <span v-if="comments.length==0" style="font-size: 1.5rem">暂无评论呢</span>
+          <div id="comli">
+            <ul>
+              <li v-for="(item,index) in comments">
+                <h3>{{item.fromwho}}<span class="label" v-if="item.fromid!=null">BigData</span></h3>
+
+                <h4>&nbsp;&nbsp;{{item.answer}}</h4>
+                <span>{{item.time}}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <footer>
+          <input type="text" placeholder="我的名字" v-model="username" />
+          <input type="text" placeholder="我也要说一句" v-model="text" />
+          <button @click="sendcomments">发送</button>
+        </footer>
+      </main>
+    </div>
+    <script>
+      new Vue({
+        el: '#app',
+        data() {
+          return {
+            question: {},
+            comments: [],
+            username: '',
+            answer: '',
+            text: '',
+            id: '',
+            user: {},
+          };
+        },
+        mounted() {
+          this.getdetail();
+          this.getcomments();
+          this.username = localStorage.getItem('username') || '';
+        },
+        methods: {
+          getdetail() {
+            this.id = window.location.search.split('=')[1];
+            axios
+              .get('http://www.ivikey.top:3009/detail', {
+                params: {
+                  id: window.location.search.split('=')[1],
+                },
+              })
+              .then((res) => {
+                if (res.data.code == 200) {
+                  this.question = res.data.data;
+                } else if (res.data.code == 301) {
+                  this.$toast.fail('数据库错误！');
+                } else {
+                  this.$toast.fail('未知错误，请联系管理员！');
+                }
+              })
+              .catch((err) => {
+                this.$toast.fail('未知错误，请联系管理员' + err);
+                console.log(err);
+              });
+          },
+          getcomments() {
+            var result = new URLSearchParams();
+            result.append('id', this.id);
+            axios
+              .post('http://www.ivikey.top:3009/getcomments', result)
+              .then((res) => {
+                this.comments = res.data.data;
+
+                console.log(res.data.data);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          },
+          sendcomments() {
+            if (this.username == '') {
+              return this.$toast.fail('名字不能为空哦~');
+            }
+            if (this.text == '') {
+              return this.$toast.fail('大胆说出你的想法吧！');
+            }
+            localStorage.setItem('username', this.username);
+            var result = new URLSearchParams();
+            result.append('username', this.username);
+            result.append('answer', this.text);
+            result.append('toid', this.id);
+            result.append('fromwho', this.username);
+            axios
+              .post('http://www.ivikey.top:3009/addcomment', result)
+              .then((res) => {
+                if (res.data.code == 200) this.$toast.success('发表成功');
+                else this.$toast.fail(res.data.msg);
+                this.getcomments();
+              })
+              .catch((err) => {
+                this.$toast.fail(res.data.msg);
+
+                console.log(err);
+              });
+          },
+
+          backindex() {
+            window.history.back();
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

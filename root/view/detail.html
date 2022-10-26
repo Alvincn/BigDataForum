@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>问题详情</title>
+    <!-- NUTUI样式 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@nutui/nutui@2.3.10/dist/nutui.min.css"
+    />
+    <!-- 引入自己的样式 -->
+    <link rel="stylesheet" href="../css/detail/style.css" />
+    <!-- 引入vue -->
+    <script src="../js/vue.js"></script>
+    <!-- 引入axios -->
+    <script src="../js/axios.min.js"></script>
+    <!-- 引入NUTUI -->
+    <script src="https://cdn.jsdelivr.net/npm/@nutui/nutui@2.3.10/dist/nutui.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <h2><img src="../image/back.svg" alt="" @click="backindex" />问题详情</h2>
+      </header>
+      <main>
+        <div id="questiondetail">
+          <span id="ask">问：{{question.question}}</span>
+          <br /><br />
+          <span id="answer"
+            >答：<span v-if="!question.answer">暂无回答,我们会尽快回答</span
+            ><span v-else>{{question.answer}}</span></span
+          >
+          <br />
+          <div id="timeuser">
+            <div id="time">{{question.username}}</div>
+            <div id="user">{{question.time}}</div>
+          </div>
+        </div>
+        <div id="operation">
+          <div id="delete">
+            <button @click="showdialog">🗑️删除🗑️</button>
+          </div>
+          <div id="edit">
+            <button @click="showadd">📓回答📓</button>
+          </div>
+        </div>
+        <div id="comments">
+          <h2>评论区</h2>
+          <span v-if="comments.length==0" style="font-size: 1.5rem">暂无评论呢</span>
+          <div id="comli">
+            <ul>
+              <li v-for="(item,index) in comments">
+                <h3>{{item.fromwho}}<span class="label" v-if="item.fromid">BigData</span></h3>
+
+                <h4>&nbsp;&nbsp;{{item.answer}}</h4>
+                <span>{{item.time}}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <footer>
+          <input type="text" placeholder="我的名字" v-model="username" />
+          <input type="text" placeholder="我也要说一句" v-model="text" />
+          <button @click="sendcomments">发送</button>
+        </footer>
+
+        <dialog>
+          <h1>确定删除吗</h1>
+          <div id="dialogFooter">
+            <button id="close_dialog">取消</button>
+            <button id="deletequs" @click="deletequs">确定</button>
+          </div>
+        </dialog>
+        <div id="answershow">
+          <h1>添加回答</h1>
+          <textarea
+            name=""
+            id=""
+            cols="30"
+            rows="10"
+            placeholder="输入回答（如果已有回答，将会覆盖）"
+            v-model="answer"
+          ></textarea>
+          <div id="dialogFooter1">
+            <button id="close_dialog2" @click="">取消</button>
+            <button id="addanswer" @click="addanswer">确定</button>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script>
+      new Vue({
+        el: '#app',
+        data() {
+          return {
+            question: {},
+            comments: [],
+            username: '',
+            answer: '',
+            text: '',
+            id: '',
+            user: {},
+          };
+        },
+        mounted() {
+          this.getdetail();
+          this.getcomments();
+          this.getUser();
+        },
+        methods: {
+          getdetail() {
+            this.id = window.location.search.split('=')[1];
+            axios
+              .get('http://www.ivikey.top:3009/detail', {
+                params: {
+                  id: window.location.search.split('=')[1],
+                },
+              })
+              .then((res) => {
+                if (res.data.code == 200) {
+                  this.question = res.data.data;
+                } else if (res.data.code == 301) {
+                  this.$toast.fail('数据库错误！');
+                } else {
+                  this.$toast.fail('未知错误，请联系管理员！');
+                }
+              })
+              .catch((err) => {
+                this.$toast.fail('未知错误，请联系管理员' + err);
+                console.log(err);
+              });
+          },
+          getcomments() {
+            var result = new URLSearchParams();
+            result.append('id', this.id);
+            axios
+              .post('http://www.ivikey.top:3009/getcomments', result)
+              .then((res) => {
+                this.comments = res.data.data;
+                console.log(res.data.data);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          },
+          sendcomments() {
+            if (this.username == '') {
+              return this.$toast.fail('名字不能为空哦~');
+            }
+            if (this.text == '') {
+              return this.$toast.fail('大胆说出你的想法吧！');
+            }
+            var result = new URLSearchParams();
+            result.append('username', this.username);
+            result.append('answer', this.text);
+            result.append('toid', this.id);
+            result.append('fromwho', this.username);
+            if (this.user.id) {
+              result.append('fromid', this.user.id);
+            }
+            axios
+              .post('http://www.ivikey.top:3009/addcomment', result)
+              .then((res) => {
+                if (res.data.code == 200) this.$toast.success('发表成功');
+                else this.$toast.fail(res.data.msg);
+                this.getcomments();
+              })
+              .catch((err) => {
+                this.$toast.fail(res.data.msg);
+
+                console.log(err);
+              });
+          },
+          getUser() {
+            var result = new URLSearchParams();
+            result.append('email', localStorage.getItem('email'));
+            axios
+              .post('http://www.ivikey.top:3009/userexist', result)
+              .then((res) => {
+                if (res.data.code == 200) {
+                  this.user = res.data.data[0];
+                  this.username = res.data.data[0].username;
+                  console.log(res.data.data[0]);
+                } else {
+                  this.user = '';
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          },
+          showdialog() {
+            var dialog = document.getElementsByTagName('dialog')[0],
+              closeDialog = document.getElementById('close_dialog');
+            dialog.showModal(); // 或者show(),这是有区别的
+            closeDialog.onclick = function () {
+              dialog.close();
+            };
+          },
+          deletequs() {
+            var dialog = document.getElementsByTagName('dialog')[0];
+            dialog.close();
+            var result = new URLSearchParams();
+            result.append('id', this.id);
+            axios
+              .post('http://www.ivikey.top:3009/deleteque', result)
+              .then((res) => {
+                if (res.data.code == 200) {
+                  this.$toast.success('删除成功');
+                  setTimeout(() => {
+                    window.history.back();
+                  }, 500);
+                } else {
+                  this.$toast.fail(res.data.msg);
+                }
+                // console.log(res.data);
+              })
+              .catch((err) => {
+                this.$toast.fail('未知错误，请联系管理员');
+                // console.log(err);
+              });
+          },
+          addanswer() {
+            var result = new URLSearchParams();
+            result.append('id', this.id);
+            result.append('answer', this.answer);
+            axios
+              .post('http://www.ivikey.top:3009/addanswer', result)
+              .then((res) => {
+                console.log(res.data);
+                if (res.data.code == 200) {
+                  this.$toast.success('回答成功');
+                  this.getdetail();
+                  document.querySelector('#answershow').style.display = 'none';
+                  document.querySelector('#answershow').classList.remove('active');
+                  document.querySelector('body').style.backgroundColor = 'white';
+                } else if (res.data.code == 301) {
+                  this.$toast.fail('数据库错误');
+                } else {
+                  this.$toast.fail('回答失败');
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+                return this.$toast.fail('未知错误，请联系管理员');
+              });
+          },
+          showadd() {
+            let name = document.querySelector('#answershow').className;
+            console.log(name);
+            var closeDialog = document.querySelector('#close_dialog2');
+            closeDialog.onclick = function () {
+              document.querySelector('#answershow').style.display = 'none';
+              document.querySelector('#answershow').classList.remove('active');
+              document.querySelector('body').style.backgroundColor = 'white';
+            };
+            if (name == 'active') {
+              document.querySelector('body').style.backgroundColor = 'white';
+
+              document.querySelector('#answershow').style.display = 'none';
+              document.querySelector('#answershow').classList.remove('active');
+            } else {
+              document.querySelector('body').style.backgroundColor = 'gray';
+              document.querySelector('#answershow').style.display = 'block';
+              document.querySelector('#answershow').classList.add('active');
+            }
+          },
+          backindex() {
+            window.history.back();
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
