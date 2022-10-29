@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../db/index');
+// 序列化图片
+const muletiparty = require('multiparty');
+let formidable = require('formidable');
+// 引入fs
+const fs = require('fs');
 // 引入session
 var session = require('express-session');
 // 引入发送邮件模块
@@ -195,4 +200,9 @@ router.post('/addanswer', (req, res) => {
     else return res.send({ code: 200, msg: '回答成功' });
   });
 });
+// 添加头像
+// router.post('/addImg', (req, res) => {
+//   console.log(req);
+// });
+
 module.exports = router;
