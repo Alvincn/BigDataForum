@@ -3,7 +3,8 @@ const router = express.Router();
 const db = require('../db/index');
 // 序列化图片
 const muletiparty = require('multiparty');
-let formidable = require('formidable');
+let fm = require('formidable');
+const path = require('path');
 // 引入fs
 const fs = require('fs');
 // 引入session
@@ -201,8 +202,54 @@ router.post('/addanswer', (req, res) => {
   });
 });
 // 添加头像
-// router.post('/addImg', (req, res) => {
-//   console.log(req);
-// });
+router.post('/addImg', (req, res) => {
+  // 5.1创建formidable文件解析上传数据
+  // 注:下载安装formidable，引入formidable再创建formidable
+  var form = new fm.IncomingForm();
+  form.keepExtensions = true;
+  // 5.2设置路径
+  // 注：把路径设置为静态路径下的uploads，需在public下创建uploads
+  form.uploadDir = path.join(__dirname, '/image/');
+  // uploadDir设置文件的上传的路径
+  // 5.3解析上传内容
+  form.parse(req);
+  // 5.4 监听end事件，判断是否上传结束
+  form.on('end', function () {
+    console.log('upload success');
+  });
+  // 5.5监听file事件(在服务器的路径下，有上传的文件)，处理上传内容
+  form.on('file', function (field, file) {
+    // console.log(file);
+    // console.log(file._writeStream.path);
+    //file是上传的文件
+    // 5.5.1 更改上传文件的名字
+    // 使用同步更改
+    // fs.renameSync(file.originalFilename, fm.uploadDir + file.originalFilename);
+    fs.renameSync(file._writeStream.path, path.join(form.uploadDir, file.originalFilename));
+    // 第一个参数file.path表示上传的文件所在的路径
+    // 5.5.2发送给浏览器端(客户端)
+    global.filename = file.originalFilename;
+  });
+});
+router.post('/signup', (req, res) => {
+  const { name, gender, major, classname, hobby, myself } = req.body;
+  let time = moment(Date.now()).format('YYYY-MM-DD HH:mm');
+  console.log('@@@@@@@@@@@@' + global.filename, name, gender, major, classname, hobby, myself);
 
+  db.query(
+    'insert into signup(imgname,name,gender,time,major,classname,hobby,myself) values(?,?,?,?,?,?,?,?)',
+    [global.filename, name, gender, time, major, classname, hobby, myself],
+    (err, res) => {
+      if (err) {
+        console.log(err);
+        return res.send({ code: 301, msg: '数据库错误' });
+      }
+      console.log('插入成功');
+    }
+  );
+  return res.send({
+    state: 200,
+    msg: '请求成功',
+  });
+});
 module.exports = router;
