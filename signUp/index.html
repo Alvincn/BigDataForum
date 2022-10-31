@@ -136,6 +136,7 @@
           major: 'ruanjian',
           classname: '22.1',
           file: '',
+          filename: '',
           time: '',
           hobby: [],
           myself: '',
@@ -179,14 +180,17 @@
             parms.append('classname', this.classname);
             parms.append('hobby', this.hobby);
             parms.append('myself', this.myself);
+
             setTimeout(() => {
+              parms.append('filename', this.filename);
+              console.log(this.filename);
               axios.post('http://127.0.0.1:3009/signup', parms).then(
                 (res) => {
                   console.log(res.data);
                   this.loading.hide();
                   this.$toast.success('提交成功啦！');
                   setTimeout(() => {
-                    window.location = './success.html';
+                    // window.location = './success.html';
                   }, 400);
                 },
                 (error) => {
@@ -231,10 +235,11 @@
             xhr.open('POST', 'http://127.0.0.1:3009/addImg', true);
             // 3.3使用send方法发送数据
             xhr.send(fd);
-            xhr.onreadystatechange = function () {
+            xhr.onreadystatechange = () => {
               if (xhr.readyState === 4) {
-                console.log(xhr.responseText);
-                return true;
+                this.filename = JSON.parse(xhr.responseText).data.filename;
+                console.log(this);
+                return this.filename;
               }
               return false;
             };

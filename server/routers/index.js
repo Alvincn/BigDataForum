@@ -228,17 +228,23 @@ router.post('/addImg', (req, res) => {
     fs.renameSync(file._writeStream.path, path.join(form.uploadDir, file.originalFilename));
     // 第一个参数file.path表示上传的文件所在的路径
     // 5.5.2发送给浏览器端(客户端)
-    global.filename = file.originalFilename;
+    filename = file.originalFilename;
+    return res.send({
+      state: 200,
+      msg: '文件保存成功',
+      data: { filename: file.originalFilename },
+    });
   });
 });
 router.post('/signup', (req, res) => {
-  const { name, gender, major, classname, hobby, myself } = req.body;
+  console.log(req.body);
+  const { name, filename, gender, major, classname, hobby, myself } = req.body;
   let time = moment(Date.now()).format('YYYY-MM-DD HH:mm');
-  console.log('@@@@@@@@@@@@' + global.filename, name, gender, major, classname, hobby, myself);
+  console.log('@@@@@@@@@@@@' + filename, name, gender, major, classname, hobby, myself);
 
   db.query(
     'insert into signup(imgname,name,gender,time,major,classname,hobby,myself) values(?,?,?,?,?,?,?,?)',
-    [global.filename, name, gender, time, major, classname, hobby, myself],
+    [filename, name, gender, time, major, classname, hobby, myself],
     (err, res) => {
       if (err) {
         console.log(err);
