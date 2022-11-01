@@ -171,8 +171,12 @@
             if (window.file == undefined) {
               return this.$toast.fail('是不是忘了上传照片啦！');
             }
+            debugger;
             this.loading = this.$toast.loading('正在提交');
+            debugger;
             let filename = await this.sendImg();
+            console.log('@@@@' + filename);
+            debugger;
             var parms = new URLSearchParams();
             parms.append('name', this.name);
             parms.append('gender', this.gender);
